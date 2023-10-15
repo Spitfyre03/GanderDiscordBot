@@ -50,10 +50,10 @@ public class App {
 
 		JDABuilder builder = JDABuilder.createLight(TOKEN, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS);
 		InteractionCenter cmdCntr = InteractionCenter.getSingleton();
-		ResponseCenter rspCntr = ResponseCenter.getSingleton();
+		//ResponseCenter rspCntr = ResponseCenter.getSingleton();
 		ChatCenter chtCntr = ChatCenter.getInstance();
 		mappingSaver = scheduledExecutor.scheduleAtFixedRate(ChatCenter::saveMappings, 1, 10, TimeUnit.MINUTES);
-		builder.addEventListeners(rspCntr, cmdCntr, chtCntr);
+		builder.addEventListeners(cmdCntr, chtCntr);
 		JDA bot = builder.build();
 		bot.awaitReady();
 

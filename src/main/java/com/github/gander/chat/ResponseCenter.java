@@ -8,6 +8,11 @@ import java.util.Random;
 
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
+
+import net.dv8tion.jda.api.entities.channel.ChannelType;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,9 +96,9 @@ public class ResponseCenter extends ListenerAdapter{
             return;
         }
         Message msg = event.getMessage();
-        MessageChannel channel = event.getChannel();
+        MessageChannelUnion channel = event.getChannel();
         if (channel.getType().equals(ChannelType.TEXT)) {
-            TextChannel textChannel = (TextChannel) channel;
+            TextChannel textChannel = channel.asTextChannel();
             if (!msg.getContentRaw().equals("")) {
                 String strMsg = msg.getContentRaw().trim();
                 Consumer<JSONObject> memeResponseConsumer = r -> {

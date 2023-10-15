@@ -85,8 +85,8 @@ public abstract class ResponseHandler {
     }
 
     protected boolean responseConditionsMet(@Nonnull MessageReceivedEvent event) {
-        return (global || acceptedGuilds.contains(event.getGuild().getIdLong()))
-            && (channelAgnostic || acceptedChannels.contains(event.getChannel().getIdLong()))
-            && (!nsfw || event.getTextChannel().isNSFW());
+        return (global || (event.isFromGuild() && acceptedGuilds.contains(event.getGuild().getIdLong())))
+            && (channelAgnostic || (event.isFromGuild() && acceptedChannels.contains(event.getChannel().getIdLong())))
+            && (!nsfw || (event.isFromGuild() && event.getChannel().asTextChannel().isNSFW()));
     }
 }

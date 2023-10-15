@@ -5,7 +5,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -49,7 +49,7 @@ public class SlashRfR implements ISlashInteraction {
             Member member = event.getMember();
             if (member != null && member.hasPermission(Permission.MANAGE_ROLES)) {
                 String sub = event.getSubcommandName();
-                TextChannel channel = event.getOption("channel", OptionMapping::getAsTextChannel);
+                GuildMessageChannel channel = event.getOption("channel", OptionMapping::getAsChannel).asGuildMessageChannel();
                 Role role = event.getOption("role", OptionMapping::getAsRole);
                 long msgID = event.getOption("msg_id", 0L, OptionMapping::getAsLong);
                 channel.retrieveMessageById(msgID).queue(

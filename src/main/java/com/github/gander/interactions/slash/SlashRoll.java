@@ -48,7 +48,7 @@ public class SlashRoll implements ISlashInteraction {
             ),
             response,
             false
-        ).addField("Total", ((Long) rolls.stream().mapToLong(Long::longValue).sum()).toString(), false);
+        ).addField("Total", String.valueOf(rolls.stream().mapToLong(Long::longValue).sum()), false);
         event.getHook().sendMessage(roller.getAsMention()).addEmbeds(embed.build()).queue();
     }
 }

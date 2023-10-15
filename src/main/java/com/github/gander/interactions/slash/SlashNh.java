@@ -1,7 +1,9 @@
 package com.github.gander.interactions.slash;
 
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
@@ -24,7 +26,7 @@ public class SlashNh implements ISlashInteraction {
     @Override
     public CommandData getCommand() {
         return Commands.slash("nh", "Get the quicklink for an nh extension.")
-            .setDefaultEnabled(false)
+            .setDefaultPermissions(DefaultMemberPermissions.DISABLED)
             .addOptions(
                 new OptionData(OptionType.INTEGER, "extension", "The extension to get")
                     .setRequiredRange(0, 999999).setRequired(true)
@@ -34,8 +36,8 @@ public class SlashNh implements ISlashInteraction {
     @Override
     public void onCommand(@Nonnull SlashCommandInteractionEvent event) {
         LOGGER.debug("Replying to nh command.");
-        TextChannel ch = (TextChannel) event.getChannel();
-        if (ch.isNSFW()) {
+        MessageChannelUnion ch = event.getChannel();
+        if (!event.isFromGuild() || (ch.getType().equals(ChannelType.TEXT) && ch.asTextChannel().isNSFW())) {
             event.deferReply().queue();
             String ext = String.format("%06d", event.getOption("extension").getAsLong());
             LOGGER.debug("Getting link for extension " + ext);
