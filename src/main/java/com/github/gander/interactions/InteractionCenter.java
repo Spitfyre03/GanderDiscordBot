@@ -20,7 +20,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
- * The hub for all Waifu Discord interactions. This class hosts event listeners for
+ * The hub for all Gander Discord interactions. This class hosts event listeners for
  * SlashCommand and ButtonInteraction events, and passes these events along to
  * registered handlers.<br>
  * <br>
@@ -124,7 +124,7 @@ public class InteractionCenter extends ListenerAdapter {
      * the same package or subpackages of {@link InteractionCenter}. For example, in
      * the following setup
      * <pre>
-     * com.github.waifu
+     * com.github.gander
      *    App.class
      *    .interactions
      *       InteractionCenter.class
