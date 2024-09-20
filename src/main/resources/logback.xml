@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS z} %boldCyan(%-30.-30thread) %boldRed(%10.10X{jda.shard}) %boldGreen(%-20.-20class{0}) [%highlight(%.-1level)] %msg%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="INFOFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/info.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+            <fileNamePattern>/logs/info_%d{yyyy-MM-dd}.zip</fileNamePattern>
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS z} %-30.-30thread %10.10X{jda.shard} %-20.-20class{0} [%.-1level] %msg%n</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+    </appender>
+    <appender name="DEBUGFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/debug.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+            <fileNamePattern>/logs/debug_%d{yyyy-MM-dd}.zip</fileNamePattern>
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS z} %-30.-30thread %10.10X{jda.shard} %-20.-20class{0} [%.-1level] %msg%n</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="INFOFILE" />
+        <appender-ref ref="DEBUGFILE" />
+    </root>
+</configuration>

@@ -1,0 +1,13 @@
+.gradle/
+gradle/
+build/
+.idea/
+target/
+.run/
+.vscode/
+
+*.bat
+
+/assets/
+logs/
+src/main/resources/assets/secrets.json
