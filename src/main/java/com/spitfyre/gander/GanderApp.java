@@ -3,7 +3,9 @@ package com.spitfyre.gander;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.spitfyre.gander.chat.ChatCenter;
 import com.spitfyre.gander.interactions.InteractionCenter;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
 import net.dv8tion.jda.internal.utils.Checks;
@@ -15,18 +17,27 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Spitfyre03
  */
 public class GanderApp {
 	public static final Logger LOGGER = LoggerFactory.getLogger(GanderApp.class);
+	private static ScheduledFuture<?> mappingSaver;
+
 	private static final GanderApp INSTANCE = new GanderApp();
 	public static GanderApp getInstance() { return INSTANCE; }
 
+	private final ScheduledExecutorService scheduledExecutor;
 	private ShardManager shardManager = null;
 
-	private GanderApp() {}
+	private GanderApp() {
+		this.scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
+	}
 
 	public static void main(String[] args) throws FileNotFoundException {
 		getInstance().startBot(args);
@@ -44,13 +55,15 @@ public class GanderApp {
 		Checks.notBlank(token, "bot_token");
 		LOGGER.info("JDA Bot token successfully retrieved.");
 
-		this.shardManager = this.buildShareManager(token);
+		this.shardManager = this.buildShardManager(token);
 		this.startShutdownThread();
 	}
 
-	private ShardManager buildShareManager(String token) {
-		DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createLight(token);
-		builder.addEventListeners(InteractionCenter.getSingleton());
+	private ShardManager buildShardManager(String token) {
+		DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createLight(token, GatewayIntent.GUILD_MEMBERS, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS);
+		ChatCenter chtCntr = ChatCenter.getInstance();
+		mappingSaver = scheduledExecutor.scheduleAtFixedRate(chtCntr::saveMappings, 1, 10, TimeUnit.MINUTES);
+		builder.addEventListeners(InteractionCenter.getSingleton(), chtCntr);
 		return builder.build();
 	}
 
@@ -70,6 +83,9 @@ public class GanderApp {
 				}
 			}
 			input.close();
+			scheduledExecutor.shutdown();
+			mappingSaver.cancel(false);
+			ChatCenter.getInstance().saveMappings();
 		}, "Gander-Shutdown-Hook").start();
 	}
 }
