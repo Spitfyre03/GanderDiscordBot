@@ -3,6 +3,7 @@ package com.spitfyre.gander;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.spitfyre.gander.interactions.InteractionCenter;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
 import net.dv8tion.jda.internal.utils.Checks;
@@ -49,7 +50,12 @@ public class GanderApp {
 
 	private ShardManager buildShareManager(String token) {
 		DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createLight(token);
+		builder.addEventListeners(InteractionCenter.getSingleton());
 		return builder.build();
+	}
+
+	public ShardManager getShardManager() {
+		return this.shardManager;
 	}
 
 	private void startShutdownThread() {
