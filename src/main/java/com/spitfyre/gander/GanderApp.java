@@ -12,9 +12,10 @@ import net.dv8tion.jda.internal.utils.Checks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Path;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.concurrent.Executors;
@@ -45,7 +46,7 @@ public class GanderApp {
 
 	private void startBot(String[] args) throws FileNotFoundException {
 		LOGGER.info("Loading JDA Application token.");
-		InputStream secrets = GanderApp.class.getResourceAsStream("/assets/secrets.json");
+		FileInputStream secrets = new FileInputStream(Path.of("").toAbsolutePath() + "/assets/secrets.json");
 		JsonObject secretsTree = Optional.ofNullable(secrets)
 				.map(InputStreamReader::new).map(JsonParser::parseReader).map(JsonElement::getAsJsonObject)
 				.orElseThrow(() -> new FileNotFoundException("Secrets json not found in assets folder!"));
